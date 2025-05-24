@@ -34,7 +34,7 @@ const ArgsSchema = {
 };
 
 const subtasksAddMultiple = {
-	name: "subtasksAddMultiple",
+	name: "subtasks-add-multiple",
 	description: "Add one or more subtasks to a parent task.",
 	parameters: ArgsSchema,
 	async execute(args, client) {

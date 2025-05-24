@@ -23,7 +23,7 @@ const ArgsSchema = {
 };
 
 const tasksListForProject = {
-	name: "tasksListForProject",
+	name: "tasks-list-for-project",
 	description: "Get tasks by project ID.",
 	parameters: ArgsSchema,
 	async execute(args, client) {

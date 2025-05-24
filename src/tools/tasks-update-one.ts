@@ -36,7 +36,7 @@ const ArgsSchema = {
 };
 
 const tasksUpdateOne = {
-	name: "tasksUpdateOne",
+	name: "tasks-update-one",
 	description: "Update an existing task with new values.",
 	parameters: ArgsSchema,
 	async execute(args, client) {

@@ -23,7 +23,7 @@ const ArgsSchema = {
 };
 
 const subtasksListForParentTask = {
-	name: "subtasksListForParentTask",
+	name: "subtasks-list-for-parent-task",
 	description: "List subtasks for a given parent task.",
 	parameters: ArgsSchema,
 	async execute(args, client) {

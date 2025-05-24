@@ -25,7 +25,7 @@ const ArgsSchema = {
 };
 
 const projectsSearch = {
-	name: "projectsSearch",
+	name: "projects-search",
 	description: "Search for projects by name or other criteria.",
 	parameters: ArgsSchema,
 	async execute(args, client) {

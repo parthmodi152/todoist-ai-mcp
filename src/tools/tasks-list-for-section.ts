@@ -23,7 +23,7 @@ const ArgsSchema = {
 };
 
 const tasksListForSection = {
-	name: "tasksListForSection",
+	name: "tasks-list-for-section",
 	description: "List tasks for a given section.",
 	parameters: ArgsSchema,
 	async execute(args, client) {

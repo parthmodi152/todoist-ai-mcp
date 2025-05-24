@@ -20,7 +20,7 @@ const ArgsSchema = {
 };
 
 const tasksSearch = {
-	name: "tasksSearch",
+	name: "tasks-search",
 	description: "Search tasks by text using Todoist's filter query.",
 	parameters: ArgsSchema,
 	async execute(args, client) {

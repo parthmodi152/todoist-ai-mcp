@@ -81,7 +81,7 @@ function renderProjectMarkdown(
 }
 
 const accountOverview = {
-	name: "accountOverview",
+	name: "account-overview",
 	description:
 		"Get a Markdown overview of all projects (with hierarchy and sections) and the inbox project. Useful in almost any context before engaging with Todoist further.",
 	parameters: ArgsSchema,

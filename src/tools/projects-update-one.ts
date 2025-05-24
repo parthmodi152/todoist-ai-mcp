@@ -7,7 +7,7 @@ const ArgsSchema = {
 };
 
 const projectsUpdateOne = {
-	name: "projectsUpdateOne",
+	name: "projects-update-one",
 	description: "Update a project's name by its ID.",
 	parameters: ArgsSchema,
 	async execute(args, client) {

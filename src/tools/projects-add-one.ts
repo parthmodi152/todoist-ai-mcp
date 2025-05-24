@@ -6,7 +6,7 @@ const ArgsSchema = {
 };
 
 const projectsAddOne = {
-	name: "projectsAddOne",
+	name: "projects-add-one",
 	description: "Add a new project.",
 	parameters: ArgsSchema,
 	async execute(args, client) {

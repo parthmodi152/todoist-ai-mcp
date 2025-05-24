@@ -18,7 +18,7 @@ const ArgsSchema = {
 };
 
 const projectsList = {
-	name: "projectsList",
+	name: "projects-list",
 	description: "List all projects for the user.",
 	parameters: ArgsSchema,
 	async execute(args, client) {

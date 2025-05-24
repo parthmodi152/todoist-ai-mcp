@@ -6,7 +6,7 @@ const ArgsSchema = {
 };
 
 const sectionsDeleteOne = {
-	name: "sectionsDeleteOne",
+	name: "sections-delete-one",
 	description: "Delete a section by its ID.",
 	parameters: ArgsSchema,
 	async execute(args, client) {

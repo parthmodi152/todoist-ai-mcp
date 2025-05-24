@@ -6,7 +6,7 @@ const ArgsSchema = {
 };
 
 const projectsDeleteOne = {
-	name: "projectsDeleteOne",
+	name: "projects-delete-one",
 	description: "Delete a project by its ID.",
 	parameters: ArgsSchema,
 	async execute(args, client) {

@@ -6,7 +6,7 @@ const ArgsSchema = {
 };
 
 const tasksCompleteOne = {
-	name: "tasksCompleteOne",
+	name: "tasks-complete-one",
 	description: "Complete a task by its ID.",
 	parameters: ArgsSchema,
 	async execute(args, client) {

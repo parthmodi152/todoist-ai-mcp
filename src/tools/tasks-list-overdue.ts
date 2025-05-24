@@ -19,7 +19,7 @@ const ArgsSchema = {
 };
 
 const tasksListOverdue = {
-	name: "tasksListOverdue",
+	name: "tasks-list-overdue",
 	description: "Get overdue tasks.",
 	parameters: ArgsSchema,
 	async execute(args, client) {

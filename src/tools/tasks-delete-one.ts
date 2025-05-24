@@ -6,7 +6,7 @@ const ArgsSchema = {
 };
 
 const tasksDeleteOne = {
-	name: "tasksDeleteOne",
+	name: "tasks-delete-one",
 	description: "Delete a task by its ID.",
 	parameters: ArgsSchema,
 	async execute(args, client) {

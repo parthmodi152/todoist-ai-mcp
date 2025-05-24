@@ -10,7 +10,7 @@ const ArgsSchema = {
 };
 
 const sectionsAddOne = {
-	name: "sectionsAddOne",
+	name: "sections-add-one",
 	description: "Add a new section to a project.",
 	parameters: ArgsSchema,
 	async execute(args, client) {

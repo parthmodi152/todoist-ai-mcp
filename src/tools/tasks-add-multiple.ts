@@ -36,7 +36,7 @@ const ArgsSchema = {
 };
 
 const tasksAddMultiple = {
-	name: "tasksAddMultiple",
+	name: "tasks-add-multiple",
 	description: "Add one or more tasks to a project, section, or parent.",
 	parameters: ArgsSchema,
 	async execute(args, client) {

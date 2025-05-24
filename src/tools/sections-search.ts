@@ -16,7 +16,7 @@ const ArgsSchema = {
 };
 
 const sectionsSearch = {
-	name: "sectionsSearch",
+	name: "sections-search",
 	description: "Search for sections by name or other criteria in a project.",
 	parameters: ArgsSchema,
 	async execute(args, client) {

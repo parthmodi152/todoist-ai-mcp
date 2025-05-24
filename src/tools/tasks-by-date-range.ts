@@ -35,7 +35,7 @@ const ArgsSchema = {
 };
 
 const tasksListByDate = {
-	name: "tasksListByDate",
+	name: "tasks-list-by-date",
 	description: "Get tasks by date range.",
 	parameters: ArgsSchema,
 	async execute(args, client) {

@@ -7,7 +7,7 @@ const ArgsSchema = {
 };
 
 const sectionsUpdateOne = {
-	name: "sectionsUpdateOne",
+	name: "sections-update-one",
 	description: "Update a section's name by its ID.",
 	parameters: ArgsSchema,
 	async execute(args, client) {

@@ -29,7 +29,7 @@ const ArgsSchema = {
 };
 
 const tasksOrganizeMultiple = {
-	name: "tasksOrganizeMultiple",
+	name: "tasks-organize-multiple",
 	description: "Organize multiple tasks (move, reorder, etc.) in bulk.",
 	parameters: ArgsSchema,
 	async execute(args, client) {
