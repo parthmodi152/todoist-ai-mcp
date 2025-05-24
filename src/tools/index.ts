@@ -1,1 +1,9 @@
-export { tasksByDateRange } from "./tasks-by-date-range.js";
+export { tasksListByDate } from "./tasks-by-date-range.js";
+export { tasksDeleteOne } from "./tasks-delete-one.js";
+export { tasksCompleteOne } from "./tasks-complete-one.js";
+export { tasksListForProject } from "./tasks-by-project.js";
+export { tasksListOverdue } from "./tasks-list-overdue.js";
+export { tasksSearch } from "./tasks-search.js";
+export { projectsList } from "./projects-list.js";
+export { tasksAddMultiple } from "./tasks-add-multiple.js";
+export { tasksUpdateOne } from "./tasks-update-one.js";
