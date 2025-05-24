@@ -3,7 +3,13 @@
 	"version": "0.0.1",
 	"type": "module",
 	"main": "dist/main.js",
-	"files": ["dist", "src", "package.json", "LICENSE.txt", "README.md"],
+	"files": [
+		"dist",
+		"src",
+		"package.json",
+		"LICENSE.txt",
+		"README.md"
+	],
 	"exports": {
 		".": "./dist/main.js",
 		"./tools": "./dist/tools/index.js"
@@ -14,11 +20,15 @@
 		"type": "git",
 		"url": "git+https://github.com/doist/todoist-ai-tools.git"
 	},
-	"keywords": ["todoist", "ai", "tools"],
+	"keywords": [
+		"todoist",
+		"ai",
+		"tools"
+	],
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"build": "rimraf dist && tsc",
-		"dev": "npm run build && npx -y @modelcontextprotocol/inspector npx node dist/main.js",
+		"dev": "concurrently \"tsc --watch\" \"nodemon --watch dist --ext js --exec 'npx -y @modelcontextprotocol/inspector npx node dist/main.js'\"",
 		"setup": "cp .env.example .env && npm install && npm run build",
 		"type-check": "tsc --noEmit",
 		"biome:sort-imports": "biome check --formatter-enabled=false --linter-enabled=false --organize-imports-enabled=true --write .",
@@ -40,8 +50,10 @@
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
 		"@types/node": "^22.15.17",
+		"concurrently": "^8.2.2",
 		"husky": "^9.1.7",
 		"lint-staged": "^16.0.0",
+		"nodemon": "^3.1.10",
 		"rimraf": "^6.0.1",
 		"typescript": "^5.8.3"
 	},
