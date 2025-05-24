@@ -54,6 +54,7 @@ Nevertheless, our goal is to provide a small set of tools that enable complete w
 ### Available Tools
 
 - **account-overview**: Get a Markdown overview of all projects (with hierarchy and sections) and the inbox project.
+- **project-overview**: Get a Markdown overview of a single project, including its sections and all tasks. Tasks are grouped by section, with tasks not in any section listed first.
 - **projects-list**: List all projects for the user.
 - **projects-search**: Search for projects by name or other criteria.
 - **projects-add-one**: Add a new project.

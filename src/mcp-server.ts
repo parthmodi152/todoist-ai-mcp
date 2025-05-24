@@ -17,6 +17,7 @@ import { subtasksAddMultiple } from "./tools/subtasks-add-multiple.js";
 import { subtasksListForParentTask } from "./tools/subtasks-list-for-parent-task.js";
 
 import { accountOverview } from "./tools/account-overview.js";
+import { projectOverview } from "./tools/project-overview.js";
 import { tasksAddMultiple } from "./tools/tasks-add-multiple.js";
 import { tasksListByDate } from "./tools/tasks-by-date-range.js";
 import { tasksListForProject } from "./tools/tasks-by-project.js";
@@ -67,6 +68,7 @@ function getMcpServer({ todoistApiKey }: { todoistApiKey: string }) {
 	registerTool(sectionsDeleteOne, server, todoist);
 	registerTool(sectionsSearch, server, todoist);
 	registerTool(accountOverview, server, todoist);
+	registerTool(projectOverview, server, todoist);
 
 	return server;
 }
