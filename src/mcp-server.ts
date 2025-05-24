@@ -18,6 +18,7 @@ import { sectionsUpdateOne } from "./tools/sections-update-one.js";
 import { subtasksAddMultiple } from "./tools/subtasks-add-multiple.js";
 import { subtasksListForParentTask } from "./tools/subtasks-list-for-parent-task.js";
 
+import { accountOverview } from "./tools/account-overview.js";
 import { tasksAddMultiple } from "./tools/tasks-add-multiple.js";
 import { tasksListByDate } from "./tools/tasks-by-date-range.js";
 import { tasksListForProject } from "./tools/tasks-by-project.js";
@@ -74,6 +75,7 @@ export async function startMcpServer({
 	registerTool(projectsSearch, server, todoist);
 	registerTool(sectionsDeleteOne, server, todoist);
 	registerTool(sectionsSearch, server, todoist);
+	registerTool(accountOverview, server, todoist);
 
 	await server.connect(transport ?? new StdioServerTransport());
 }
