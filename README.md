@@ -43,44 +43,6 @@ const result = streamText({
 });
 ```
 
-## MCP server setup
-
-### 1. Clone this repository
-
-```sh
-git clone https://github.com/doist/todoist-ai-tools
-```
-
-### 2. Install dependencies and set up environment
-
-```sh
-npm run setup
-```
-
-### 3. Add this `todoist-ai-tools` section to your `mcp.json` config in Cursor, Claude, Raycast, etc.
-
-```json
-{
-    "mcpServers": {
-        "todoist-ai-tools": {
-            "type": "stdio",
-            "command": "node",
-            "args": [
-                "/Users/<your_user_name>/code/todoist-ai-tools/dist/main.js"
-            ],
-            "env": {
-                "TODOIST_API_KEY": "your-todoist-token-here"
-            }
-        }
-    }
-}
-```
-
-### 4. Update the configuration above as follows
-
-- Replace `TODOIST_API_KEY` with your Todoist API token.
-- Replace the path in the `args` array with the correct path to where you cloned the repository
-
 ## Features
 
 A key feature of this project is that tools can be reused, and are not written specifically for use in an MCP server. They can be hooked up as tools to other conversational AI interfaces (e.g. Vercel's AI SDK).
@@ -91,33 +53,38 @@ Nevertheless, our goal is to provide a small set of tools that enable complete w
 
 ### Available Tools
 
--   **tasks-by-date-range**: Lists all tasks in a date range.
+- **account-overview**: Get a Markdown overview of all projects (with hierarchy and sections) and the inbox project.
+- **projects-list**: List all projects for the user.
+- **projects-search**: Search for projects by name or other criteria.
+- **projects-add-one**: Add a new project.
+- **projects-update-one**: Update a project's name by its ID.
+- **projects-delete-one**: Delete a project by its ID.
+- **sections-search**: Search for sections by name or other criteria in a project.
+- **sections-add-one**: Add a new section to a project.
+- **sections-update-one**: Update a section's name by its ID.
+- **sections-delete-one**: Delete a section by its ID.
+- **tasks-list-by-date**: Get tasks by date range.
+- **tasks-list-overdue**: Get overdue tasks.
+- **tasks-list-for-project**: Get tasks by project ID.
+- **tasks-list-for-section**: List tasks for a given section.
+- **tasks-search**: Search tasks by text using Todoist's filter query.
+- **tasks-add-multiple**: Add one or more tasks to a project, section, or parent.
+- **tasks-update-one**: Update an existing task with new values.
+- **tasks-delete-one**: Delete a task by its ID.
+- **tasks-complete-one**: Complete a task by its ID.
+- **tasks-organize-multiple**: Organize multiple tasks (move, reorder, etc.) in bulk.
+- **subtasks-list-for-parent-task**: List subtasks for a given parent task.
+- **subtasks-add-multiple**: Add one or more subtasks to a parent task.
 
 ## Dependencies
 
 -   MCP server using the official [@modelcontextprotocol/sdk](https://github.com/modelcontextprotocol/typescript-sdk?tab=readme-ov-file#installation)
 -   Todoist Typescript API client [@doist/todoist-api-typescript](https://github.com/Doist/todoist-api-typescript)
 
-## Development Setup
+## MCP Server Setup
 
-### 1. Install dependencies and set up environment
+See [docs/mcp-server.md](docs/mcp-server.md) for full instructions on setting up the MCP server.
 
-```sh
-npm run setup
-```
+## Local Development Setup
 
-### 2. Configure environment variables
-
-Update the `.env` file with your Todoist token:
-
-```env
-TODOIST_API_KEY=your-key-goes-here
-```
-
-### 3. Run the MCP server with inspector
-
-```sh
-npm run dev
-```
-
-This command will start a web server running the [MCP inspector](https://modelcontextprotocol.io/docs/tools/inspector), which allows you to try the tools manually, instead of through an AI.
+See [docs/dev-setup.md](docs/dev-setup.md) for full instructions on setting up this repository locally for development and contributing.
