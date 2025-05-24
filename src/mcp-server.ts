@@ -8,12 +8,16 @@ import { projectsList } from "./tools/projects-list.js";
 import { projectsUpdateOne } from "./tools/projects-update-one.js";
 import { sectionsAddOne } from "./tools/sections-add-one.js";
 import { sectionsUpdateOne } from "./tools/sections-update-one.js";
+import { subtasksAddMultiple } from "./tools/subtasks-add-multiple.js";
+import { subtasksListForParentTask } from "./tools/subtasks-list-for-parent-task.js";
 import { tasksAddMultiple } from "./tools/tasks-add-multiple.js";
 import { tasksListByDate } from "./tools/tasks-by-date-range.js";
 import { tasksListForProject } from "./tools/tasks-by-project.js";
 import { tasksCompleteOne } from "./tools/tasks-complete-one.js";
 import { tasksDeleteOne } from "./tools/tasks-delete-one.js";
+import { tasksListForSection } from "./tools/tasks-list-for-section.js";
 import { tasksListOverdue } from "./tools/tasks-list-overdue.js";
+import { tasksOrganizeMultiple } from "./tools/tasks-organize-multiple.js";
 import { tasksSearch } from "./tools/tasks-search.js";
 import { tasksUpdateOne } from "./tools/tasks-update-one.js";
 
@@ -54,6 +58,10 @@ export async function startMcpServer({
 	registerTool(projectsUpdateOne, server, todoist);
 	registerTool(sectionsAddOne, server, todoist);
 	registerTool(sectionsUpdateOne, server, todoist);
+	registerTool(tasksOrganizeMultiple, server, todoist);
+	registerTool(subtasksListForParentTask, server, todoist);
+	registerTool(tasksListForSection, server, todoist);
+	registerTool(subtasksAddMultiple, server, todoist);
 
 	await server.connect(transport ?? new StdioServerTransport());
 }

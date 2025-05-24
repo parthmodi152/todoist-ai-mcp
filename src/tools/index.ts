@@ -7,3 +7,7 @@ export { tasksSearch } from "./tasks-search.js";
 export { projectsList } from "./projects-list.js";
 export { tasksAddMultiple } from "./tasks-add-multiple.js";
 export { tasksUpdateOne } from "./tasks-update-one.js";
+export { tasksOrganizeMultiple } from "./tasks-organize-multiple.js";
+export { subtasksListForParentTask } from "./subtasks-list-for-parent-task.js";
+export { tasksListForSection } from "./tasks-list-for-section.js";
+export { subtasksAddMultiple } from "./subtasks-add-multiple.js";
