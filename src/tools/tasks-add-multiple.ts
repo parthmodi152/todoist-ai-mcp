@@ -35,8 +35,8 @@ const ArgsSchema = {
 	tasks: z.array(TaskSchema).min(1).describe("The array of tasks to add."),
 };
 
-const addMultipleTasks = {
-	name: "addMultipleTasks",
+const tasksAddMultiple = {
+	name: "tasksAddMultiple",
 	description: "Add one or more tasks to a project, section, or parent.",
 	parameters: ArgsSchema,
 	async execute(args, client) {
@@ -50,4 +50,4 @@ const addMultipleTasks = {
 	},
 } satisfies TodoistTool<typeof ArgsSchema>;
 
-export { addMultipleTasks };
+export { tasksAddMultiple };

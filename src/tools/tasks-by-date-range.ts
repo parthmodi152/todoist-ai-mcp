@@ -34,9 +34,9 @@ const ArgsSchema = {
 		),
 };
 
-const tasksByDateRange = {
-	name: "tasksByDateRange",
-	description: "Get tasks by date range",
+const tasksListByDate = {
+	name: "tasksListByDate",
+	description: "Get tasks by date range.",
 	parameters: ArgsSchema,
 	async execute(args, client) {
 		const startDate =
@@ -55,4 +55,4 @@ const tasksByDateRange = {
 	},
 } satisfies TodoistTool<typeof ArgsSchema>;
 
-export { tasksByDateRange };
+export { tasksListByDate };

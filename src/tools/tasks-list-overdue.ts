@@ -18,8 +18,8 @@ const ArgsSchema = {
 		),
 };
 
-const tasksOverdue = {
-	name: "tasksOverdue",
+const tasksListOverdue = {
+	name: "tasksListOverdue",
 	description: "Get overdue tasks.",
 	parameters: ArgsSchema,
 	async execute(args, client) {
@@ -32,4 +32,4 @@ const tasksOverdue = {
 	},
 } satisfies TodoistTool<typeof ArgsSchema>;
 
-export { tasksOverdue };
+export { tasksListOverdue };

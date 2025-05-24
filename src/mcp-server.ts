@@ -4,12 +4,12 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import type { Transport } from "@modelcontextprotocol/sdk/shared/transport.js";
 import { registerTool } from "./mcp-helpers.js";
 import { projectsList } from "./tools/projects-list.js";
-import { addMultipleTasks } from "./tools/tasks-add-multiple.js";
-import { tasksByDateRange } from "./tools/tasks-by-date-range.js";
-import { tasksByProject } from "./tools/tasks-by-project.js";
-import { tasksOverdue } from "./tools/tasks-list-overdue.js";
+import { tasksAddMultiple } from "./tools/tasks-add-multiple.js";
+import { tasksListByDate } from "./tools/tasks-by-date-range.js";
+import { tasksListForProject } from "./tools/tasks-by-project.js";
+import { tasksListOverdue } from "./tools/tasks-list-overdue.js";
 import { tasksSearch } from "./tools/tasks-search.js";
-import { updateTask } from "./tools/tasks-update-one.js";
+import { tasksUpdateOne } from "./tools/tasks-update-one.js";
 
 const instructions = `
 Tools to help you manage your todoist tasks.
@@ -35,13 +35,13 @@ export async function startMcpServer({
 
 	const todoist = new TodoistApi(todoistApiKey);
 
-	registerTool(tasksByDateRange, server, todoist);
-	registerTool(tasksOverdue, server, todoist);
-	registerTool(tasksByProject, server, todoist);
+	registerTool(tasksListByDate, server, todoist);
+	registerTool(tasksListOverdue, server, todoist);
+	registerTool(tasksListForProject, server, todoist);
 	registerTool(tasksSearch, server, todoist);
 	registerTool(projectsList, server, todoist);
-	registerTool(addMultipleTasks, server, todoist);
-	registerTool(updateTask, server, todoist);
+	registerTool(tasksAddMultiple, server, todoist);
+	registerTool(tasksUpdateOne, server, todoist);
 
 	await server.connect(transport ?? new StdioServerTransport());
 }

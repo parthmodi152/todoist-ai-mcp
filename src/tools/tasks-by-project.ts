@@ -22,8 +22,8 @@ const ArgsSchema = {
 		),
 };
 
-const tasksByProject = {
-	name: "tasksByProject",
+const tasksListForProject = {
+	name: "tasksListForProject",
 	description: "Get tasks by project ID.",
 	parameters: ArgsSchema,
 	async execute(args, client) {
@@ -40,4 +40,4 @@ const tasksByProject = {
 	},
 } satisfies TodoistTool<typeof ArgsSchema>;
 
-export { tasksByProject };
+export { tasksListForProject };

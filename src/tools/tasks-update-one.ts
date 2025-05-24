@@ -35,8 +35,8 @@ const ArgsSchema = {
 		),
 };
 
-const updateTask = {
-	name: "updateTask",
+const tasksUpdateOne = {
+	name: "tasksUpdateOne",
 	description: "Update an existing task with new values.",
 	parameters: ArgsSchema,
 	async execute(args, client) {
@@ -45,4 +45,4 @@ const updateTask = {
 	},
 } satisfies TodoistTool<typeof ArgsSchema>;
 
-export { updateTask };
+export { tasksUpdateOne };
