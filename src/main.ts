@@ -1,5 +1,6 @@
+import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import dotenv from "dotenv";
-import { startMcpServer } from "./mcp-server.js";
+import { getMcpServer } from "./mcp-server.js";
 
 function main() {
 	const todoistApiKey = process.env.TODOIST_API_KEY;
@@ -7,7 +8,10 @@ function main() {
 		throw new Error("TODOIST_API_KEY is not set");
 	}
 
-	startMcpServer({ todoistApiKey })
+	const server = getMcpServer({ todoistApiKey });
+	const transport = new StdioServerTransport();
+	server
+		.connect(transport)
 		.then(() => {
 			// We use console.error because standard I/O is being used for the MCP server communication.
 			console.error("Server started");

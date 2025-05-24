@@ -1,1 +1,1 @@
-export { startMcpServer } from "./mcp-server.js";
+export { getMcpServer } from "./mcp-server.js";

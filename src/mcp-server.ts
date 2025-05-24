@@ -1,7 +1,5 @@
 import { TodoistApi } from "@doist/todoist-api-typescript";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import type { Transport } from "@modelcontextprotocol/sdk/shared/transport.js";
 import { registerTool } from "./mcp-helpers.js";
 
 import { projectsAddOne } from "./tools/projects-add-one.js";
@@ -35,18 +33,11 @@ Tools to help you manage your todoist tasks.
 `;
 
 /**
- * Start the MCP server.
+ * Create the MCP server.
  * @param todoistApiKey - The API key for the todoist account.
- * @param transport - The transport to use for communication. Defaults to standard input/output.
- * @returns A promise that resolves when the server is started.
+ * @returns the MCP server.
  */
-export async function startMcpServer({
-	todoistApiKey,
-	transport,
-}: {
-	todoistApiKey: string;
-	transport?: Transport;
-}) {
+function getMcpServer({ todoistApiKey }: { todoistApiKey: string }) {
 	const server = new McpServer(
 		{ name: "todoist-mcp-server", version: "0.1.0" },
 		{ instructions },
@@ -77,5 +68,7 @@ export async function startMcpServer({
 	registerTool(sectionsSearch, server, todoist);
 	registerTool(accountOverview, server, todoist);
 
-	await server.connect(transport ?? new StdioServerTransport());
+	return server;
 }
+
+export { getMcpServer };
