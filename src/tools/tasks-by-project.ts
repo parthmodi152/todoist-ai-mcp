@@ -1,0 +1,43 @@
+import { z } from "zod";
+import type { TodoistTool } from "../todoist-tool.js";
+import { mapTasks } from "./shared.js";
+
+const ArgsSchema = {
+	projectId: z
+		.string()
+		.min(1)
+		.describe("The ID of the project to get tasks for."),
+	limit: z
+		.number()
+		.int()
+		.min(1)
+		.max(50)
+		.default(10)
+		.describe("The maximum number of tasks to return."),
+	cursor: z
+		.string()
+		.optional()
+		.describe(
+			"The cursor to get the next page of tasks (cursor is obtained from the previous call to this tool, with the same parameters).",
+		),
+};
+
+const tasksByProject = {
+	name: "tasksByProject",
+	description: "Get tasks by project ID.",
+	parameters: ArgsSchema,
+	async execute(args, client) {
+		const { projectId, limit, cursor } = args;
+		const { results, nextCursor } = await client.getTasks({
+			projectId,
+			limit,
+			cursor: cursor ?? null,
+		});
+		return {
+			tasks: mapTasks(results),
+			nextCursor,
+		};
+	},
+} satisfies TodoistTool<typeof ArgsSchema>;
+
+export { tasksByProject };

@@ -1,4 +1,5 @@
 import {
+	type Project,
 	type Task,
 	type TodoistApi,
 	getSanitizedContent,
@@ -23,6 +24,24 @@ function mapTasks(tasks: Task[]) {
 		sectionId: task.sectionId,
 		parentId: task.parentId,
 		labels: task.labels,
+	}));
+}
+
+/**
+ * Map Todoist projects to a more structured format, for LLM consumption.
+ * @param projects - The projects to map.
+ * @returns The mapped projects.
+ */
+function mapProjects(projects: Project[]) {
+	return projects.map((project) => ({
+		id: project.id,
+		name: project.name,
+		color: project.color,
+		isFavorite: project.isFavorite,
+		isShared: project.isShared,
+		parentId: project.parentId ?? null,
+		inboxProject: project.isInboxProject ?? false,
+		viewStyle: project.viewStyle,
 	}));
 }
 
@@ -72,4 +91,4 @@ async function getTasksByFilter({
 	}
 }
 
-export { getTasksByFilter, mapTasks };
+export { getTasksByFilter, mapTasks, mapProjects };
