@@ -71,7 +71,7 @@ Nevertheless, our goal is to provide a small set of tools that enable complete w
 - **tasks-add-multiple**: Add one or more tasks to a project, section, or parent.
 - **tasks-update-one**: Update an existing task with new values.
 - **tasks-delete-one**: Delete a task by its ID.
-- **tasks-complete-one**: Complete a task by its ID.
+- **tasks-complete-multiple**: Complete one or multiple tasks by ID.
 - **tasks-organize-multiple**: Organize multiple tasks (move, reorder, etc.) in bulk.
 - **subtasks-list-for-parent-task**: List subtasks for a given parent task.
 - **subtasks-add-multiple**: Add one or more subtasks to a parent task.

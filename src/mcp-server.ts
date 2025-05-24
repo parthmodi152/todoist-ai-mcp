@@ -20,7 +20,7 @@ import { accountOverview } from "./tools/account-overview.js";
 import { tasksAddMultiple } from "./tools/tasks-add-multiple.js";
 import { tasksListByDate } from "./tools/tasks-by-date-range.js";
 import { tasksListForProject } from "./tools/tasks-by-project.js";
-import { tasksCompleteOne } from "./tools/tasks-complete-one.js";
+import { tasksCompleteMultiple } from "./tools/tasks-complete-multiple.js";
 import { tasksDeleteOne } from "./tools/tasks-delete-one.js";
 import { tasksListForSection } from "./tools/tasks-list-for-section.js";
 import { tasksListOverdue } from "./tools/tasks-list-overdue.js";
@@ -53,7 +53,7 @@ function getMcpServer({ todoistApiKey }: { todoistApiKey: string }) {
 	registerTool(tasksAddMultiple, server, todoist);
 	registerTool(tasksUpdateOne, server, todoist);
 	registerTool(tasksDeleteOne, server, todoist);
-	registerTool(tasksCompleteOne, server, todoist);
+	registerTool(tasksCompleteMultiple, server, todoist);
 	registerTool(projectsAddOne, server, todoist);
 	registerTool(projectsUpdateOne, server, todoist);
 	registerTool(sectionsAddOne, server, todoist);

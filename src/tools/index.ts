@@ -11,7 +11,7 @@ export { sectionsDeleteOne } from "./sections-delete-one.js";
 
 export { tasksListByDate } from "./tasks-by-date-range.js";
 export { tasksDeleteOne } from "./tasks-delete-one.js";
-export { tasksCompleteOne } from "./tasks-complete-one.js";
+export { tasksCompleteMultiple } from "./tasks-complete-multiple.js";
 export { tasksListForProject } from "./tasks-by-project.js";
 export { tasksListOverdue } from "./tasks-list-overdue.js";
 export { tasksSearch } from "./tasks-search.js";
