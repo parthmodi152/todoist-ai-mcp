@@ -7,12 +7,12 @@ import {
 import z from "zod";
 
 /**
- * Map Todoist tasks to a more structured format, for LLM consumption.
- * @param tasks - The tasks to map.
- * @returns The mapped tasks.
+ * Map a single Todoist task to a more structured format, for LLM consumption.
+ * @param task - The task to map.
+ * @returns The mapped task.
  */
-function mapTasks(tasks: Task[]) {
-	return tasks.map((task) => ({
+function mapTask(task: Task) {
+	return {
 		id: task.id,
 		content: getSanitizedContent(task.content),
 		description: getSanitizedContent(task.description),
@@ -24,16 +24,16 @@ function mapTasks(tasks: Task[]) {
 		sectionId: task.sectionId,
 		parentId: task.parentId,
 		labels: task.labels,
-	}));
+	};
 }
 
 /**
- * Map Todoist projects to a more structured format, for LLM consumption.
- * @param projects - The projects to map.
- * @returns The mapped projects.
+ * Map a single Todoist project to a more structured format, for LLM consumption.
+ * @param project - The project to map.
+ * @returns The mapped project.
  */
-function mapProjects(projects: Project[]) {
-	return projects.map((project) => ({
+function mapProject(project: Project) {
+	return {
 		id: project.id,
 		name: project.name,
 		color: project.color,
@@ -42,7 +42,7 @@ function mapProjects(projects: Project[]) {
 		parentId: project.parentId ?? null,
 		inboxProject: project.isInboxProject ?? false,
 		viewStyle: project.viewStyle,
-	}));
+	};
 }
 
 const ErrorSchema = z.object({
@@ -73,7 +73,7 @@ async function getTasksByFilter({
 		});
 
 		return {
-			tasks: mapTasks(results),
+			tasks: results.map(mapTask),
 			nextCursor,
 		};
 	} catch (error) {
@@ -91,4 +91,4 @@ async function getTasksByFilter({
 	}
 }
 
-export { getTasksByFilter, mapTasks, mapProjects };
+export { getTasksByFilter, mapTask, mapProject };

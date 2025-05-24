@@ -1,5 +1,6 @@
 import { z } from "zod";
 import type { TodoistTool } from "../todoist-tool.js";
+import { mapProject } from "./shared.js";
 
 const ArgsSchema = {
 	name: z.string().min(1).describe("The name of the project to add."),
@@ -11,7 +12,7 @@ const projectsAddOne = {
 	parameters: ArgsSchema,
 	async execute(args, client) {
 		const project = await client.addProject({ name: args.name });
-		return project;
+		return mapProject(project);
 	},
 } satisfies TodoistTool<typeof ArgsSchema>;
 

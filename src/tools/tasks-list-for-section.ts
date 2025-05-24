@@ -1,6 +1,6 @@
 import { z } from "zod";
 import type { TodoistTool } from "../todoist-tool.js";
-import { mapTasks } from "./shared.js";
+import { mapTask } from "./shared.js";
 
 const ArgsSchema = {
 	sectionId: z
@@ -34,7 +34,7 @@ const tasksListForSection = {
 			cursor: cursor ?? null,
 		});
 		return {
-			tasks: mapTasks(results),
+			tasks: results.map(mapTask),
 			nextCursor,
 		};
 	},

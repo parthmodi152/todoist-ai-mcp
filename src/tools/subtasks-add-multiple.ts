@@ -1,7 +1,7 @@
 import type { Task } from "@doist/todoist-api-typescript";
 import { z } from "zod";
 import type { TodoistTool } from "../todoist-tool.js";
-import { mapTasks } from "./shared.js";
+import { mapTask } from "./shared.js";
 
 const SubtaskSchema = z.object({
 	content: z.string().min(1).describe("The content of the subtask to add."),
@@ -44,7 +44,7 @@ const subtasksAddMultiple = {
 			const taskArgs = { ...task, parentId };
 			newTasks.push(await client.addTask(taskArgs));
 		}
-		return mapTasks(newTasks);
+		return newTasks.map(mapTask);
 	},
 } satisfies TodoistTool<typeof ArgsSchema>;
 

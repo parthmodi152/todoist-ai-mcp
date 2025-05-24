@@ -1,6 +1,6 @@
 import { z } from "zod";
 import type { TodoistTool } from "../todoist-tool.js";
-import { mapProjects } from "./shared.js";
+import { mapProject } from "./shared.js";
 
 const ArgsSchema = {
 	search: z
@@ -40,7 +40,7 @@ const projectsSearch = {
 				)
 			: results;
 		return {
-			projects: mapProjects(filtered),
+			projects: filtered.map(mapProject),
 			nextCursor,
 		};
 	},
