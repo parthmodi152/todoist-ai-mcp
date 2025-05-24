@@ -3,10 +3,16 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import type { Transport } from "@modelcontextprotocol/sdk/shared/transport.js";
 import { registerTool } from "./mcp-helpers.js";
+import { projectsAddOne } from "./tools/projects-add-one.js";
 import { projectsList } from "./tools/projects-list.js";
+import { projectsUpdateOne } from "./tools/projects-update-one.js";
+import { sectionsAddOne } from "./tools/sections-add-one.js";
+import { sectionsUpdateOne } from "./tools/sections-update-one.js";
 import { tasksAddMultiple } from "./tools/tasks-add-multiple.js";
 import { tasksListByDate } from "./tools/tasks-by-date-range.js";
 import { tasksListForProject } from "./tools/tasks-by-project.js";
+import { tasksCompleteOne } from "./tools/tasks-complete-one.js";
+import { tasksDeleteOne } from "./tools/tasks-delete-one.js";
 import { tasksListOverdue } from "./tools/tasks-list-overdue.js";
 import { tasksSearch } from "./tools/tasks-search.js";
 import { tasksUpdateOne } from "./tools/tasks-update-one.js";
@@ -42,6 +48,12 @@ export async function startMcpServer({
 	registerTool(projectsList, server, todoist);
 	registerTool(tasksAddMultiple, server, todoist);
 	registerTool(tasksUpdateOne, server, todoist);
+	registerTool(tasksDeleteOne, server, todoist);
+	registerTool(tasksCompleteOne, server, todoist);
+	registerTool(projectsAddOne, server, todoist);
+	registerTool(projectsUpdateOne, server, todoist);
+	registerTool(sectionsAddOne, server, todoist);
+	registerTool(sectionsUpdateOne, server, todoist);
 
 	await server.connect(transport ?? new StdioServerTransport());
 }
