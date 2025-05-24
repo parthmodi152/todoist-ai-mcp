@@ -67,10 +67,10 @@ function renderProjectMarkdown(
 	indent = "",
 ): string[] {
 	const lines: string[] = [];
-	lines.push(`${indent}- Project: ${project.name}`);
+	lines.push(`${indent}- Project: ${project.name} (id=${project.id})`);
 	const sections = sectionsByProject[project.id] || [];
 	for (const section of sections) {
-		lines.push(`${indent}  - Section: ${section.name}`);
+		lines.push(`${indent}  - Section: ${section.name} (id=${section.id})`);
 	}
 	for (const child of project.children) {
 		lines.push(
@@ -98,9 +98,9 @@ const accountOverview = {
 
 		const lines: string[] = ["# Personal Projects", ""];
 		if (inbox) {
-			lines.push(`- Inbox Project: ${inbox.name}`);
+			lines.push(`- Inbox Project: ${inbox.name} (id=${inbox.id})`);
 			for (const section of sectionsByProject[inbox.id] || []) {
-				lines.push(`  - Section: ${section.name}`);
+				lines.push(`  - Section: ${section.name} (id=${section.id})`);
 			}
 		}
 		if (tree.length) {
