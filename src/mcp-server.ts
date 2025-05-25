@@ -41,7 +41,12 @@ Tools to help you manage your todoist tasks.
 function getMcpServer({ todoistApiKey }: { todoistApiKey: string }) {
 	const server = new McpServer(
 		{ name: "todoist-mcp-server", version: "0.1.0" },
-		{ instructions },
+		{
+			capabilities: {
+				tools: { listChanged: true },
+			},
+			instructions,
+		},
 	);
 
 	const todoist = new TodoistApi(todoistApiKey);
