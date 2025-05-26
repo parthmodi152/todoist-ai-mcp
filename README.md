@@ -75,7 +75,6 @@ Nevertheless, our goal is to provide a small set of tools that enable complete w
 - **tasks-complete-multiple**: Complete one or multiple tasks by ID.
 - **tasks-organize-multiple**: Organize multiple tasks (move, reorder, etc.) in bulk.
 - **subtasks-list-for-parent-task**: List subtasks for a given parent task.
-- **subtasks-add-multiple**: Add one or more subtasks to a parent task.
 
 ## Dependencies
 

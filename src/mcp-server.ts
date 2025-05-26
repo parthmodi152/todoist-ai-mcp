@@ -13,7 +13,6 @@ import { sectionsDeleteOne } from "./tools/sections-delete-one.js";
 import { sectionsSearch } from "./tools/sections-search.js";
 import { sectionsUpdateOne } from "./tools/sections-update-one.js";
 
-import { subtasksAddMultiple } from "./tools/subtasks-add-multiple.js";
 import { subtasksListForParentTask } from "./tools/subtasks-list-for-parent-task.js";
 
 import { accountOverview } from "./tools/account-overview.js";
@@ -67,7 +66,6 @@ function getMcpServer({ todoistApiKey }: { todoistApiKey: string }) {
 	registerTool(tasksOrganizeMultiple, server, todoist);
 	registerTool(subtasksListForParentTask, server, todoist);
 	registerTool(tasksListForSection, server, todoist);
-	registerTool(subtasksAddMultiple, server, todoist);
 	registerTool(projectsDeleteOne, server, todoist);
 	registerTool(projectsSearch, server, todoist);
 	registerTool(sectionsDeleteOne, server, todoist);

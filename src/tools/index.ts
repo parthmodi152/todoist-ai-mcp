@@ -21,7 +21,6 @@ export { tasksOrganizeMultiple } from "./tasks-organize-multiple.js";
 export { tasksListForSection } from "./tasks-list-for-section.js";
 
 export { subtasksListForParentTask } from "./subtasks-list-for-parent-task.js";
-export { subtasksAddMultiple } from "./subtasks-add-multiple.js";
 
 export { accountOverview } from "./account-overview.js";
 export { projectOverview } from "./project-overview.js";
