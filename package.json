@@ -1,14 +1,24 @@
 {
 	"name": "@doist/todoist-ai",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"type": "module",
-	"main": "dist/index.js",
-	"types": "dist/index.d.ts",
-	"files": ["dist", "src", "package.json", "LICENSE.txt", "README.md"],
+	"main": "./dist/cjs/index.js",
+	"module": "./dist/esm/index.js",
+	"types": "./dist/types/index.d.ts",
 	"exports": {
-		".": "./dist/index.js",
-		"./tools": "./dist/tools/index.js"
+		".": {
+			"import": "./dist/esm/index.js",
+			"require": "./dist/cjs/index.js"
+		}
 	},
+	"files": [
+		"dist/esm",
+		"dist/cjs",
+		"dist/types",
+		"package.json",
+		"LICENSE.txt",
+		"README.md"
+	],
 	"license": "MIT",
 	"description": "A collection of tools for Todoist using AI",
 	"repository": {
@@ -18,7 +28,10 @@
 	"keywords": ["todoist", "ai", "tools"],
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"build": "rimraf dist && tsc",
+		"build:esm": "tsc --project tsconfig.esm.json",
+		"build:cjs": "tsc --project tsconfig.cjs.json",
+		"build:types": "tsc --project tsconfig.types.json",
+		"build": "rimraf dist && npm run build:esm && npm run build:cjs && npm run build:types",
 		"dev": "concurrently \"tsc --watch\" \"nodemon --watch dist --ext js --exec 'npx -y @modelcontextprotocol/inspector npx node dist/main.js'\"",
 		"setup": "cp .env.example .env && npm install && npm run build",
 		"type-check": "tsc --noEmit",

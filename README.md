@@ -19,7 +19,7 @@ npm install @doist/todoist-ai
 Here's an example using [Vercel's AI SDK](https://ai-sdk.dev/docs/ai-sdk-core/generating-text#streamtext).
 
 ```js
-import { tasksListByDate, tasksAddMultiple } from "@doist/todoist-ai/tools";
+import { tasksListByDate, tasksAddMultiple } from "@doist/todoist-ai";
 import { streamText } from "ai";
 
 const result = streamText({
