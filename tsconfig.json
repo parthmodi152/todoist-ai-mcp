@@ -27,6 +27,8 @@
 		"isolatedModules": true,
 
 		/* Other */
-		"skipLibCheck": true
+		"skipLibCheck": true,
+		"declaration": true,
+		"declarationMap": true
 	}
 }

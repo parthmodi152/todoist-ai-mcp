@@ -1,6 +1,7 @@
-# Todoist AI Tools
+# Todoist AI SDK
 
-A set of tools to connect to AI agents, to allow them to use Todoist on a user's behalf.
+Library for connecting AI agents to Todoist. Includes tools that can be integrated into LLMs,
+enabling them to access and modify a Todoist account on the user's behalf.
 
 These tools can be used both through an MCP server, or imported directly in other projects to
 integrate them to your own AI conversational interfaces.
@@ -10,37 +11,39 @@ integrate them to your own AI conversational interfaces.
 ### 1. Add this repository as a dependency
 
 ```sh
-npm install github:doist/todoist-ai-tools
+npm install @doist/todoist-ai
 ```
-
-> [!NOTE]
->
-> Ideally we should end up publishing this to NPM, so that we can install it in the regular way.
-> Another consequence of installing it like this is that the `dist/` folder with the build will not
-> be present inside `node_modules/todoist-ai-tools/`. You may need to do that manually, like this:
->
-> ```sh
-> cd node_modules/todoist-ai-tools
-> npm install
-> npm run build
-> cd ../..
-> ```
 
 ### 2. Import the tools and plug them to an AI
 
 Here's an example using [Vercel's AI SDK](https://ai-sdk.dev/docs/ai-sdk-core/generating-text#streamtext).
 
 ```js
-import { tasksByDateRange } from "todoist-ai-tools/tools";
+import { tasksListByDate, tasksAddMultiple } from "@doist/todoist-ai/tools";
 import { streamText } from "ai";
 
 const result = streamText({
     model: yourModel,
     system: "You are a helpful Todoist assistant",
     tools: {
-        tasksByDateRange,
+        tasksListByDate,
+        tasksAddMultiple,
     },
 });
+```
+
+## Using as an MCP server
+
+For convenience, we already include a function that initializes an MCP Server with all the tools available:
+
+```js
+import { getMcpServer } from "@doist/todoist-ai";
+
+async function main() {
+    const server = getMcpServer({ todoistApiKey: process.env.TODOIST_API_KEY });
+    const transport = new StdioServerTransport();
+    await server.connect(transport);
+}
 ```
 
 ## Features
@@ -53,28 +56,28 @@ Nevertheless, our goal is to provide a small set of tools that enable complete w
 
 ### Available Tools
 
-- **account-overview**: Get a Markdown overview of all projects (with hierarchy and sections) and the inbox project.
-- **project-overview**: Get a Markdown overview of a single project, including its sections and all tasks. Tasks are grouped by section, with tasks not in any section listed first.
-- **projects-list**: List all projects for the user.
-- **projects-search**: Search for projects by name or other criteria.
-- **projects-add-one**: Add a new project.
-- **projects-update-one**: Update a project's name by its ID.
-- **projects-delete-one**: Delete a project by its ID.
-- **sections-search**: Search for sections by name or other criteria in a project.
-- **sections-add-one**: Add a new section to a project.
-- **sections-update-one**: Update a section's name by its ID.
-- **sections-delete-one**: Delete a section by its ID.
-- **tasks-list-by-date**: Get tasks by date range.
-- **tasks-list-overdue**: Get overdue tasks.
-- **tasks-list-for-project**: Get tasks by project ID.
-- **tasks-list-for-section**: List tasks for a given section.
-- **tasks-search**: Search tasks by text using Todoist's filter query.
-- **tasks-add-multiple**: Add one or more tasks to a project, section, or parent.
-- **tasks-update-one**: Update an existing task with new values.
-- **tasks-delete-one**: Delete a task by its ID.
-- **tasks-complete-multiple**: Complete one or multiple tasks by ID.
-- **tasks-organize-multiple**: Organize multiple tasks (move, reorder, etc.) in bulk.
-- **subtasks-list-for-parent-task**: List subtasks for a given parent task.
+-   **account-overview**: Get a Markdown overview of all projects (with hierarchy and sections) and the inbox project.
+-   **project-overview**: Get a Markdown overview of a single project, including its sections and all tasks. Tasks are grouped by section, with tasks not in any section listed first.
+-   **projects-list**: List all projects for the user.
+-   **projects-search**: Search for projects by name or other criteria.
+-   **projects-add-one**: Add a new project.
+-   **projects-update-one**: Update a project's name by its ID.
+-   **projects-delete-one**: Delete a project by its ID.
+-   **sections-search**: Search for sections by name or other criteria in a project.
+-   **sections-add-one**: Add a new section to a project.
+-   **sections-update-one**: Update a section's name by its ID.
+-   **sections-delete-one**: Delete a section by its ID.
+-   **tasks-list-by-date**: Get tasks by date range.
+-   **tasks-list-overdue**: Get overdue tasks.
+-   **tasks-list-for-project**: Get tasks by project ID.
+-   **tasks-list-for-section**: List tasks for a given section.
+-   **tasks-search**: Search tasks by text using Todoist's filter query.
+-   **tasks-add-multiple**: Add one or more tasks to a project, section, or parent.
+-   **tasks-update-one**: Update an existing task with new values.
+-   **tasks-delete-one**: Delete a task by its ID.
+-   **tasks-complete-multiple**: Complete one or multiple tasks by ID.
+-   **tasks-organize-multiple**: Organize multiple tasks (move, reorder, etc.) in bulk.
+-   **subtasks-list-for-parent-task**: List subtasks for a given parent task.
 
 ## Dependencies
 
