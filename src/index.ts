@@ -12,10 +12,10 @@ import { sectionsSearch } from "./tools/sections-search.js";
 import { sectionsUpdateOne } from "./tools/sections-update-one.js";
 
 import { tasksAddMultiple } from "./tools/tasks-add-multiple.js";
-import { tasksListByDate } from "./tools/tasks-by-date-range.js";
-import { tasksListForProject } from "./tools/tasks-by-project.js";
 import { tasksCompleteMultiple } from "./tools/tasks-complete-multiple.js";
 import { tasksDeleteOne } from "./tools/tasks-delete-one.js";
+import { tasksListByDate } from "./tools/tasks-list-by-date.js";
+import { tasksListForProject } from "./tools/tasks-list-for-project.js";
 import { tasksListForSection } from "./tools/tasks-list-for-section.js";
 import { tasksListOverdue } from "./tools/tasks-list-overdue.js";
 import { tasksOrganizeMultiple } from "./tools/tasks-organize-multiple.js";
