@@ -18,10 +18,10 @@ import { subtasksListForParentTask } from "./tools/subtasks-list-for-parent-task
 import { accountOverview } from "./tools/account-overview.js";
 import { projectOverview } from "./tools/project-overview.js";
 import { tasksAddMultiple } from "./tools/tasks-add-multiple.js";
-import { tasksListByDate } from "./tools/tasks-by-date-range.js";
-import { tasksListForProject } from "./tools/tasks-by-project.js";
 import { tasksCompleteMultiple } from "./tools/tasks-complete-multiple.js";
 import { tasksDeleteOne } from "./tools/tasks-delete-one.js";
+import { tasksListByDate } from "./tools/tasks-list-by-date.js";
+import { tasksListForProject } from "./tools/tasks-list-for-project.js";
 import { tasksListForSection } from "./tools/tasks-list-for-section.js";
 import { tasksListOverdue } from "./tools/tasks-list-overdue.js";
 import { tasksOrganizeMultiple } from "./tools/tasks-organize-multiple.js";
@@ -35,9 +35,13 @@ Tools to help you manage your todoist tasks.
 /**
  * Create the MCP server.
  * @param todoistApiKey - The API key for the todoist account.
+ * @param baseUrl - The base URL for the todoist API.
  * @returns the MCP server.
  */
-function getMcpServer({ todoistApiKey }: { todoistApiKey: string }) {
+function getMcpServer({
+	todoistApiKey,
+	baseUrl,
+}: { todoistApiKey: string; baseUrl?: string }) {
 	const server = new McpServer(
 		{ name: "todoist-mcp-server", version: "0.1.0" },
 		{
@@ -48,7 +52,7 @@ function getMcpServer({ todoistApiKey }: { todoistApiKey: string }) {
 		},
 	);
 
-	const todoist = new TodoistApi(todoistApiKey);
+	const todoist = new TodoistApi(todoistApiKey, baseUrl);
 
 	registerTool(tasksListByDate, server, todoist);
 	registerTool(tasksListOverdue, server, todoist);
