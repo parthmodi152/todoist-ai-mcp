@@ -2,29 +2,19 @@ import { TodoistApi } from '@doist/todoist-api-typescript'
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp'
 import { registerTool } from './mcp-helpers'
 
-import { projectsAddOne } from './tools/projects-add-one'
-import { projectsDeleteOne } from './tools/projects-delete-one'
+import { deleteOne } from './tools/delete-one'
 import { projectsList } from './tools/projects-list'
-import { projectsSearch } from './tools/projects-search'
-import { projectsUpdateOne } from './tools/projects-update-one'
+import { projectsManage } from './tools/projects-manage'
 
-import { sectionsAddOne } from './tools/sections-add-one'
-import { sectionsDeleteOne } from './tools/sections-delete-one'
+import { sectionsManage } from './tools/sections-manage'
 import { sectionsSearch } from './tools/sections-search'
-import { sectionsUpdateOne } from './tools/sections-update-one'
 
-import { subtasksListForParentTask } from './tools/subtasks-list-for-parent-task'
-
-import { accountOverview } from './tools/account-overview'
-import { projectOverview } from './tools/project-overview'
+import { overview } from './tools/overview'
 import { tasksAddMultiple } from './tools/tasks-add-multiple'
 import { tasksCompleteMultiple } from './tools/tasks-complete-multiple'
-import { tasksDeleteOne } from './tools/tasks-delete-one'
 import { tasksListByDate } from './tools/tasks-list-by-date'
 import { tasksListCompleted } from './tools/tasks-list-completed'
-import { tasksListForProject } from './tools/tasks-list-for-project'
-import { tasksListForSection } from './tools/tasks-list-for-section'
-import { tasksListOverdue } from './tools/tasks-list-overdue'
+import { tasksListForContainer } from './tools/tasks-list-for-container'
 import { tasksOrganizeMultiple } from './tools/tasks-organize-multiple'
 import { tasksSearch } from './tools/tasks-search'
 import { tasksUpdateOne } from './tools/tasks-update-one'
@@ -54,27 +44,18 @@ function getMcpServer({ todoistApiKey, baseUrl }: { todoistApiKey: string; baseU
 
     registerTool(tasksListCompleted, server, todoist)
     registerTool(tasksListByDate, server, todoist)
-    registerTool(tasksListOverdue, server, todoist)
-    registerTool(tasksListForProject, server, todoist)
     registerTool(tasksSearch, server, todoist)
     registerTool(projectsList, server, todoist)
     registerTool(tasksAddMultiple, server, todoist)
     registerTool(tasksUpdateOne, server, todoist)
-    registerTool(tasksDeleteOne, server, todoist)
+    registerTool(deleteOne, server, todoist)
     registerTool(tasksCompleteMultiple, server, todoist)
-    registerTool(projectsAddOne, server, todoist)
-    registerTool(projectsUpdateOne, server, todoist)
-    registerTool(sectionsAddOne, server, todoist)
-    registerTool(sectionsUpdateOne, server, todoist)
+    registerTool(projectsManage, server, todoist)
+    registerTool(sectionsManage, server, todoist)
     registerTool(tasksOrganizeMultiple, server, todoist)
-    registerTool(subtasksListForParentTask, server, todoist)
-    registerTool(tasksListForSection, server, todoist)
-    registerTool(projectsDeleteOne, server, todoist)
-    registerTool(projectsSearch, server, todoist)
-    registerTool(sectionsDeleteOne, server, todoist)
     registerTool(sectionsSearch, server, todoist)
-    registerTool(accountOverview, server, todoist)
-    registerTool(projectOverview, server, todoist)
+    registerTool(overview, server, todoist)
+    registerTool(tasksListForContainer, server, todoist)
 
     return server
 }
