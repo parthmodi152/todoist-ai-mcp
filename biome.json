@@ -51,6 +51,6 @@
         "useIgnoreFile": true
     },
     "files": {
-        "ignore": ["test/fixtures/**/*"]
+        "ignore": ["test/fixtures/**/*", "package.json"]
     }
 }
