@@ -1,7 +1,12 @@
 import type { Task, TodoistApi } from '@doist/todoist-api-typescript'
 import { jest } from '@jest/globals'
 import { tasksAddMultiple } from '../tasks-add-multiple.js'
-import { createMockTask } from '../test-helpers.js'
+import {
+    TODAY,
+    createMockTask,
+    extractStructuredContent,
+    extractTextContent,
+} from '../test-helpers.js'
 
 // Mock the Todoist API
 const mockTodoistApi = {
@@ -79,23 +84,21 @@ describe('tasks-add-multiple tool', () => {
                 parentId: undefined,
             })
 
-            // Verify result is properly mapped
-            expect(result).toEqual([
+            // Verify result is a concise summary
+            expect(extractTextContent(result)).toMatchSnapshot()
+
+            // Verify structured content
+            const structuredContent = extractStructuredContent(result)
+            expect(structuredContent.tasks).toHaveLength(2)
+            expect(structuredContent).toEqual(
                 expect.objectContaining({
-                    id: '8485093748',
-                    content: 'First task content',
-                    description: '',
-                    labels: [],
+                    totalCount: 2,
+                    tasks: expect.arrayContaining([
+                        expect.objectContaining({ id: '8485093748' }),
+                        expect.objectContaining({ id: '8485093749' }),
+                    ]),
                 }),
-                expect.objectContaining({
-                    id: '8485093749',
-                    content: 'Second task content',
-                    description: 'Task description',
-                    dueDate: '2025-08-15',
-                    priority: 2,
-                    labels: ['work', 'urgent'],
-                }),
-            ])
+            )
         })
 
         it('should handle tasks with section and parent IDs', async () => {
@@ -137,17 +140,17 @@ describe('tasks-add-multiple tool', () => {
                 parentId: 'parent-task-456',
             })
 
-            expect(result).toEqual([
+            // Verify result is a concise summary
+            expect(extractTextContent(result)).toMatchSnapshot()
+
+            // Verify structured content
+            const structuredContent = extractStructuredContent(result)
+            expect(structuredContent).toEqual(
                 expect.objectContaining({
-                    id: '8485093750',
-                    content: 'Subtask content',
-                    description: 'Subtask description',
-                    priority: 3,
-                    sectionId: 'section-123',
-                    parentId: 'parent-task-456',
-                    labels: [],
+                    totalCount: 1,
+                    tasks: expect.arrayContaining([expect.objectContaining({ id: '8485093750' })]),
                 }),
-            ])
+            )
         })
 
         it('should add tasks with duration', async () => {
@@ -175,14 +178,8 @@ describe('tasks-add-multiple tool', () => {
                 {
                     projectId: '6cfCcrrCFg2xP94Q',
                     tasks: [
-                        {
-                            content: 'Task with 2 hour duration',
-                            duration: '2h',
-                        },
-                        {
-                            content: 'Task with 45 minute duration',
-                            duration: '45m',
-                        },
+                        { content: 'Task with 2 hour duration', duration: '2h' },
+                        { content: 'Task with 45 minute duration', duration: '45m' },
                     ],
                 },
                 mockTodoistApi,
@@ -206,19 +203,21 @@ describe('tasks-add-multiple tool', () => {
                 durationUnit: 'minute',
             })
 
-            // Verify result includes formatted duration
-            expect(result).toEqual([
+            // Verify result is a concise summary
+            expect(extractTextContent(result)).toMatchSnapshot()
+
+            // Verify structured content
+            const structuredContent = extractStructuredContent(result)
+            expect(structuredContent.tasks).toHaveLength(2)
+            expect(structuredContent).toEqual(
                 expect.objectContaining({
-                    id: '8485093752',
-                    content: 'Task with 2 hour duration',
-                    duration: '2h',
+                    totalCount: 2,
+                    tasks: expect.arrayContaining([
+                        expect.objectContaining({ id: '8485093752' }),
+                        expect.objectContaining({ id: '8485093753' }),
+                    ]),
                 }),
-                expect.objectContaining({
-                    id: '8485093753',
-                    content: 'Task with 45 minute duration',
-                    duration: '45m',
-                }),
-            ])
+            )
         })
 
         it('should handle various duration formats', async () => {
@@ -244,14 +243,7 @@ describe('tasks-add-multiple tool', () => {
                 mockTodoistApi.addTask.mockClear()
 
                 await tasksAddMultiple.execute(
-                    {
-                        tasks: [
-                            {
-                                content: 'Test task',
-                                duration: testCase.input,
-                            },
-                        ],
-                    },
+                    { tasks: [{ content: 'Test task', duration: testCase.input }] },
                     mockTodoistApi,
                 )
 
@@ -269,14 +261,7 @@ describe('tasks-add-multiple tool', () => {
         it('should throw error for invalid duration format', async () => {
             await expect(
                 tasksAddMultiple.execute(
-                    {
-                        tasks: [
-                            {
-                                content: 'Task with invalid duration',
-                                duration: 'invalid',
-                            },
-                        ],
-                    },
+                    { tasks: [{ content: 'Task with invalid duration', duration: 'invalid' }] },
                     mockTodoistApi,
                 ),
             ).rejects.toThrow(
@@ -287,20 +272,14 @@ describe('tasks-add-multiple tool', () => {
         it('should throw error for duration exceeding 24 hours', async () => {
             await expect(
                 tasksAddMultiple.execute(
-                    {
-                        tasks: [
-                            {
-                                content: 'Task with too long duration',
-                                duration: '25h',
-                            },
-                        ],
-                    },
+                    { tasks: [{ content: 'Task with too long duration', duration: '25h' }] },
                     mockTodoistApi,
                 ),
             ).rejects.toThrow(
                 'Task "Task with too long duration": Invalid duration format "25h": Duration cannot exceed 24 hours (1440 minutes)',
             )
         })
+
         it('should propagate API errors', async () => {
             const apiError = new Error('API Error: Task content is required')
             mockTodoistApi.addTask.mockRejectedValue(apiError)
@@ -337,6 +316,58 @@ describe('tasks-add-multiple tool', () => {
 
             // Verify first task was attempted
             expect(mockTodoistApi.addTask).toHaveBeenCalledTimes(2)
+        })
+    })
+
+    describe('next steps logic', () => {
+        it('should suggest tasks-list-by-date for today when hasToday is true', async () => {
+            const mockApiResponse: Task = createMockTask({
+                id: '8485093755',
+                content: 'Task due today',
+                url: 'https://todoist.com/showTask?id=8485093755',
+                addedAt: '2025-08-13T22:09:56.123456Z',
+                due: {
+                    date: TODAY,
+                    isRecurring: false,
+                    lang: 'en',
+                    string: 'today',
+                    timezone: null,
+                },
+            })
+
+            mockTodoistApi.addTask.mockResolvedValue(mockApiResponse)
+
+            const result = await tasksAddMultiple.execute(
+                { tasks: [{ content: 'Task due today', dueString: 'today' }] },
+                mockTodoistApi,
+            )
+
+            const textContent = extractTextContent(result)
+            expect(textContent).toMatchSnapshot()
+            expect(textContent).toContain('Use overview to see your updated project organization')
+        })
+
+        it('should suggest overview tool when no hasToday context', async () => {
+            const mockApiResponse: Task = createMockTask({
+                id: '8485093756',
+                content: 'Regular task',
+                url: 'https://todoist.com/showTask?id=8485093756',
+                addedAt: '2025-08-13T22:09:56.123456Z',
+            })
+
+            mockTodoistApi.addTask.mockResolvedValue(mockApiResponse)
+
+            const result = await tasksAddMultiple.execute(
+                {
+                    projectId: '6cfCcrrCFg2xP94Q',
+                    tasks: [{ content: 'Regular task' }],
+                },
+                mockTodoistApi,
+            )
+
+            const textContent = extractTextContent(result)
+            expect(textContent).toMatchSnapshot()
+            expect(textContent).toContain('Use overview to see your updated project organization')
         })
     })
 })

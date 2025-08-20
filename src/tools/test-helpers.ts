@@ -1,4 +1,5 @@
 import type { PersonalProject, Section, Task } from '@doist/todoist-api-typescript'
+import { getToolOutput } from '../mcp-helpers'
 
 /**
  * Mapped task type matching the output of mapTask function.
@@ -160,6 +161,64 @@ export function createTestCases<T, E = unknown>(
 }
 
 /**
+ * Extracts the text content from a tool output for snapshot testing.
+ * This allows tests to match against just the text content while tools return structured output.
+ */
+export function extractTextContent(toolOutput: unknown): string {
+    if (typeof toolOutput === 'string') {
+        return toolOutput
+    }
+
+    if (typeof toolOutput === 'object' && toolOutput !== null && 'content' in toolOutput) {
+        const output = toolOutput as { content: unknown }
+        if (
+            Array.isArray(output.content) &&
+            output.content[0] &&
+            typeof output.content[0] === 'object' &&
+            output.content[0] !== null &&
+            'type' in output.content[0] &&
+            'text' in output.content[0] &&
+            output.content[0].type === 'text'
+        ) {
+            return output.content[0].text as string
+        }
+    }
+
+    throw new Error('Expected tool output to have text content')
+}
+
+/**
+ * Extracts the structured content from a tool output for testing.
+ * This handles both the new `structuredContent` field and legacy JSON-encoded content.
+ */
+export function extractStructuredContent(
+    output: ReturnType<typeof getToolOutput>,
+): Record<string, unknown> {
+    // Check for new structuredContent field first
+    if ('structuredContent' in output && typeof output.structuredContent === 'object') {
+        return output.structuredContent as Record<string, unknown>
+    }
+
+    // Fall back to checking for JSON content in the content array
+    if ('content' in output && Array.isArray(output.content)) {
+        for (const item of output.content) {
+            if (
+                typeof item === 'object' &&
+                item !== null &&
+                'type' in item &&
+                'text' in item &&
+                item.type === 'text' &&
+                item.mimeType === 'application/json'
+            ) {
+                return JSON.parse(item.text) as Record<string, unknown>
+            }
+        }
+    }
+
+    throw new Error('Expected tool output to have structured content')
+}
+
+/**
  * Common mock IDs used across tests for consistency.
  */
 export const TEST_IDS = {
@@ -173,3 +232,9 @@ export const TEST_IDS = {
     SECTION_2: 'section-456',
     USER_ID: '713437',
 } as const
+
+/**
+ * Fixed date for consistent test snapshots.
+ * Use this instead of new Date() in tests to avoid snapshot drift.
+ */
+export const TODAY = '2025-08-17' as const

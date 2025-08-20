@@ -1,7 +1,12 @@
 import type { PersonalProject, TodoistApi } from '@doist/todoist-api-typescript'
 import { jest } from '@jest/globals'
 import { projectsManage } from '../projects-manage.js'
-import { TEST_IDS, createMockProject } from '../test-helpers.js'
+import {
+    TEST_IDS,
+    createMockProject,
+    extractStructuredContent,
+    extractTextContent,
+} from '../test-helpers.js'
 
 // Mock the Todoist API
 const mockTodoistApi = {
@@ -35,17 +40,23 @@ describe('projects-manage tool', () => {
                 name: 'test-abc123def456-project',
             })
 
-            // Verify result is properly mapped
-            expect(result).toEqual({
-                id: TEST_IDS.PROJECT_TEST,
-                name: 'test-abc123def456-project',
-                color: 'charcoal',
-                isFavorite: false,
-                isShared: false,
-                parentId: null,
-                inboxProject: false,
-                viewStyle: 'list',
-            })
+            const textContent = extractTextContent(result)
+            expect(textContent).toMatchSnapshot()
+            expect(textContent).toContain('Created project: test-abc123def456-project')
+            expect(textContent).toContain(`id=${TEST_IDS.PROJECT_TEST}`)
+            expect(textContent).toContain('Use tasks-add-multiple to add your first tasks')
+
+            // Verify structured content
+            const structuredContent = extractStructuredContent(result)
+            expect(structuredContent).toEqual(
+                expect.objectContaining({
+                    project: expect.objectContaining({
+                        id: TEST_IDS.PROJECT_TEST,
+                        name: 'test-abc123def456-project',
+                    }),
+                    operation: 'created',
+                }),
+            )
         })
 
         it('should handle different project properties from API', async () => {
@@ -68,16 +79,11 @@ describe('projects-manage tool', () => {
 
             expect(mockTodoistApi.addProject).toHaveBeenCalledWith({ name: 'My Blue Project' })
 
-            expect(result).toEqual({
-                id: 'project-456',
-                name: 'My Blue Project',
-                color: 'blue',
-                isFavorite: true,
-                isShared: true,
-                parentId: 'parent-123',
-                inboxProject: false,
-                viewStyle: 'board',
-            })
+            const textContent = extractTextContent(result)
+            expect(textContent).toMatchSnapshot()
+            expect(textContent).toContain('Created project: My Blue Project')
+            expect(textContent).toContain('id=project-456')
+            expect(textContent).toContain('Use sections-manage to organize this project')
         })
     })
 
@@ -116,8 +122,11 @@ describe('projects-manage tool', () => {
                 name: 'Updated Project Name',
             })
 
-            // Update returns raw project (not mapped) - this is the actual behavior
-            expect(result).toEqual(mockApiResponse)
+            const textContent = extractTextContent(result)
+            expect(textContent).toMatchSnapshot()
+            expect(textContent).toContain('Updated project: Updated Project Name')
+            expect(textContent).toContain('id=existing-project-123')
+            expect(textContent).toContain('Use projects-list to see all projects')
         })
     })
 

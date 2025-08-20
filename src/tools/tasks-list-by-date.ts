@@ -1,7 +1,16 @@
 import { addDays, formatISO } from 'date-fns'
 import { z } from 'zod'
+import { getToolOutput } from '../mcp-helpers.js'
 import type { TodoistTool } from '../todoist-tool.js'
 import { getTasksByFilter } from '../tool-helpers.js'
+import { ApiLimits } from '../utils/constants.js'
+import {
+    generateTaskNextSteps,
+    getDateString,
+    previewTasks,
+    summarizeList,
+} from '../utils/response-builders.js'
+import { ToolNames } from '../utils/tool-names.js'
 
 const ArgsSchema = {
     startDate: z
@@ -23,8 +32,8 @@ const ArgsSchema = {
         .number()
         .int()
         .min(1)
-        .max(50)
-        .default(10)
+        .max(ApiLimits.TASKS_MAX)
+        .default(ApiLimits.TASKS_DEFAULT)
         .describe('The maximum number of tasks to return.'),
     cursor: z
         .string()
@@ -35,7 +44,7 @@ const ArgsSchema = {
 }
 
 const tasksListByDate = {
-    name: 'tasks-list-by-date',
+    name: ToolNames.TASKS_LIST_BY_DATE,
     description:
         "Get tasks by date range or overdue tasks. Use startDate 'overdue' for overdue tasks, or provide a date/date range.",
     parameters: ArgsSchema,
@@ -54,13 +63,93 @@ const tasksListByDate = {
             query = `(due after: ${startDate} | due: ${startDate}) & due before: ${endDateStr}`
         }
 
-        return await getTasksByFilter({
+        const result = await getTasksByFilter({
             client,
             query,
             cursor: args.cursor,
             limit: args.limit,
         })
+
+        const textContent = generateTextContent({
+            tasks: result.tasks,
+            args,
+            nextCursor: result.nextCursor,
+        })
+
+        return getToolOutput({
+            textContent,
+            structuredContent: {
+                tasks: result.tasks,
+                nextCursor: result.nextCursor,
+                totalCount: result.tasks.length,
+                hasMore: Boolean(result.nextCursor),
+                appliedFilters: args,
+            },
+        })
     },
 } satisfies TodoistTool<typeof ArgsSchema>
+
+function generateTextContent({
+    tasks,
+    args,
+    nextCursor,
+}: {
+    tasks: Awaited<ReturnType<typeof getTasksByFilter>>['tasks']
+    args: z.infer<z.ZodObject<typeof ArgsSchema>>
+    nextCursor: string | null
+}) {
+    // Generate filter description
+    const filterHints: string[] = []
+    if (args.startDate === 'overdue') {
+        filterHints.push('overdue tasks only')
+    } else if (args.startDate === 'today') {
+        filterHints.push(`today${args.daysCount > 1 ? ` + ${args.daysCount - 1} more days` : ''}`)
+    } else {
+        filterHints.push(
+            `${args.startDate}${args.daysCount > 1 ? ` to ${getDateString(addDays(args.startDate, args.daysCount))}` : ''}`,
+        )
+    }
+
+    // Generate subject description
+    const subject =
+        args.startDate === 'overdue'
+            ? 'Overdue tasks'
+            : args.startDate === 'today'
+              ? `Today's tasks`
+              : `Tasks for ${args.startDate}`
+
+    // Generate helpful suggestions for empty results
+    const zeroReasonHints: string[] = []
+    if (tasks.length === 0) {
+        if (args.startDate === 'overdue') {
+            zeroReasonHints.push('Great job! No overdue tasks')
+            zeroReasonHints.push("Check today's tasks with startDate='today'")
+        } else {
+            zeroReasonHints.push("Expand date range with larger 'daysCount'")
+            zeroReasonHints.push("Check 'overdue' for past-due items")
+        }
+    }
+
+    // Generate contextual next steps
+    const now = new Date()
+    const todayStr = getDateString(now)
+    const nextSteps = generateTaskNextSteps('listed', tasks, {
+        hasToday: args.startDate === 'today' || tasks.some((task) => task.dueDate === todayStr),
+        hasOverdue:
+            args.startDate === 'overdue' ||
+            tasks.some((task) => task.dueDate && new Date(task.dueDate) < now),
+    })
+
+    return summarizeList({
+        subject,
+        count: tasks.length,
+        limit: args.limit,
+        nextCursor: nextCursor ?? undefined,
+        filterHints,
+        previewLines: previewTasks(tasks),
+        zeroReasonHints,
+        nextSteps,
+    })
+}
 
 export { tasksListByDate }
