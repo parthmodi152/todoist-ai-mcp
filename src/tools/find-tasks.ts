@@ -4,6 +4,7 @@ import { getToolOutput } from '../mcp-helpers.js'
 import type { TodoistTool } from '../todoist-tool.js'
 import { getTasksByFilter, mapTask } from '../tool-helpers.js'
 import { ApiLimits } from '../utils/constants.js'
+import { LabelsSchema, generateLabelsFilter } from '../utils/labels.js'
 import {
     generateTaskNextSteps,
     getDateString,
@@ -33,6 +34,7 @@ const ArgsSchema = {
         .describe(
             'The cursor to get the next page of tasks (cursor is obtained from the previous call to this tool, with the same parameters).',
         ),
+    ...LabelsSchema,
 }
 
 const findTasks = {
@@ -41,12 +43,22 @@ const findTasks = {
         'Find tasks by text search, or by project/section/parent container. At least one filter must be provided.',
     parameters: ArgsSchema,
     async execute(args, client) {
-        const { searchText, projectId, sectionId, parentId, limit, cursor } = args
+        const {
+            searchText,
+            projectId,
+            sectionId,
+            parentId,
+            limit,
+            cursor,
+            labels,
+            labelsOperator,
+        } = args
 
         // Validate at least one filter is provided
-        if (!searchText && !projectId && !sectionId && !parentId) {
+        const hasLabels = labels && labels.length > 0
+        if (!searchText && !projectId && !sectionId && !parentId && !hasLabels) {
             throw new Error(
-                'At least one filter must be provided: searchText, projectId, sectionId, or parentId',
+                'At least one filter must be provided: searchText, projectId, sectionId, parentId, or labels',
             )
         }
 
@@ -65,13 +77,25 @@ const findTasks = {
             const mappedTasks = results.map(mapTask)
 
             // If also has searchText, filter the results
-            const finalTasks = searchText
+            let finalTasks = searchText
                 ? mappedTasks.filter(
                       (task) =>
                           task.content.toLowerCase().includes(searchText.toLowerCase()) ||
                           task.description?.toLowerCase().includes(searchText.toLowerCase()),
                   )
                 : mappedTasks
+
+            // If labels have also been provided, filter the results for those
+            if (labels && labels.length > 0) {
+                finalTasks =
+                    labelsOperator === 'and'
+                        ? finalTasks.filter((task) =>
+                              labels.every((label) => task.labels.includes(label)),
+                          )
+                        : finalTasks.filter((task) =>
+                              labels.some((label) => task.labels.includes(label)),
+                          )
+            }
 
             const textContent = generateTextContent({
                 tasks: finalTasks,
@@ -92,10 +116,28 @@ const findTasks = {
             })
         }
 
-        // Text-only search using filter query
+        // Handle search text and/or labels using filter query
+        let query = ''
+
+        // Add search text component
+        if (searchText) {
+            query = `search: ${searchText}`
+        }
+
+        // Add labels component
+        const labelsFilter = generateLabelsFilter(labels, labelsOperator)
+        if (labelsFilter.length > 0) {
+            if (query.length > 0) {
+                query += ` & ${labelsFilter}`
+            } else {
+                query = labelsFilter
+            }
+        }
+
+        // Execute filter query
         const result = await getTasksByFilter({
             client,
-            query: `search: ${searchText}`,
+            query,
             cursor: args.cursor,
             limit: args.limit,
         })
@@ -187,14 +229,42 @@ function generateTextContent({
             filterHints.push(`containing "${args.searchText}"`)
         }
 
+        // Add label filter information
+        if (args.labels && args.labels.length > 0) {
+            const labelText = args.labels
+                .map((label) => `@${label}`)
+                .join(args.labelsOperator === 'and' ? ' & ' : ' | ')
+            filterHints.push(`labels: ${labelText}`)
+        }
+
         // Container-specific zero result hints
         if (tasks.length === 0) {
             zeroReasonHints.push(...getContainerZeroReasonHints(args))
         }
     } else {
-        // Text-only search
-        subject = `Search results for "${args.searchText}"`
-        filterHints.push(`matching "${args.searchText}"`)
+        // Text-only search or labels-only search
+        if (args.searchText) {
+            subject = `Search results for "${args.searchText}"`
+            filterHints.push(`matching "${args.searchText}"`)
+        } else if (args.labels && args.labels.length > 0) {
+            // Labels-only search
+            const labelText = args.labels
+                .map((label) => `@${label}`)
+                .join(args.labelsOperator === 'and' ? ' & ' : ' | ')
+            subject = `Tasks with labels: ${labelText}`
+            filterHints.push(`labels: ${labelText}`)
+        } else {
+            // Fallback (shouldn't happen given validation)
+            subject = 'Tasks'
+        }
+
+        // Add label filter information for text search with labels
+        if (args.searchText && args.labels && args.labels.length > 0) {
+            const labelText = args.labels
+                .map((label) => `@${label}`)
+                .join(args.labelsOperator === 'and' ? ' & ' : ' | ')
+            filterHints.push(`labels: ${labelText}`)
+        }
 
         if (tasks.length === 0) {
             zeroReasonHints.push('Try broader search terms')
