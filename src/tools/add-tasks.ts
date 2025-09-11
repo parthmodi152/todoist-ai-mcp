@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { getToolOutput } from '../mcp-helpers.js'
 import type { TodoistTool } from '../todoist-tool.js'
 import { mapTask } from '../tool-helpers.js'
+import { assignmentValidator } from '../utils/assignment-validator.js'
 import { DurationParseError, parseDuration } from '../utils/duration-parser.js'
 import {
     generateTaskNextSteps,
@@ -25,6 +26,12 @@ const TaskSchema = z.object({
     projectId: z.string().optional().describe('The project ID to add this task to.'),
     sectionId: z.string().optional().describe('The section ID to add this task to.'),
     parentId: z.string().optional().describe('The parent task ID (for subtasks).'),
+    responsibleUser: z
+        .string()
+        .optional()
+        .describe(
+            'Assign task to this user. Can be a user ID, name, or email address. User must be a collaborator on the target project.',
+        ),
 })
 
 const ArgsSchema = {
@@ -33,7 +40,8 @@ const ArgsSchema = {
 
 const addTasks = {
     name: ToolNames.ADD_TASKS,
-    description: 'Add one or more tasks to a project, section, or parent.',
+    description:
+        'Add one or more tasks to a project, section, or parent. Supports assignment to project collaborators.',
     parameters: ArgsSchema,
     async execute({ tasks }, client) {
         const addTaskPromises = tasks.map((task) => processTask(task, client))
@@ -56,9 +64,23 @@ const addTasks = {
 } satisfies TodoistTool<typeof ArgsSchema>
 
 async function processTask(task: z.infer<typeof TaskSchema>, client: TodoistApi): Promise<Task> {
-    const { duration: durationStr, projectId, sectionId, parentId, ...otherTaskArgs } = task
+    const {
+        duration: durationStr,
+        projectId,
+        sectionId,
+        parentId,
+        responsibleUser,
+        ...otherTaskArgs
+    } = task
 
     let taskArgs: AddTaskArgs = { ...otherTaskArgs, projectId, sectionId, parentId }
+
+    // Prevent assignment to tasks without sufficient project context
+    if (!projectId && !sectionId && !parentId) {
+        throw new Error(
+            `Task "${task.content}": Cannot assign tasks without specifying project context. Please specify a projectId, sectionId, or parentId.`,
+        )
+    }
 
     // Parse duration if provided
     if (durationStr) {
@@ -75,6 +97,51 @@ async function processTask(task: z.infer<typeof TaskSchema>, client: TodoistApi)
             }
             throw error
         }
+    }
+
+    // Handle assignment if provided
+    if (responsibleUser) {
+        // Resolve target project for validation
+        let targetProjectId = projectId
+        if (!targetProjectId && parentId) {
+            // For subtasks, get project from parent task
+            try {
+                const parentTask = await client.getTask(parentId)
+                targetProjectId = parentTask.projectId
+            } catch (_error) {
+                throw new Error(`Task "${task.content}": Parent task "${parentId}" not found`)
+            }
+        } else if (!targetProjectId && sectionId) {
+            // For section tasks, we need to find the project - this is a limitation
+            // For now, we'll require explicit projectId when using assignments with sections
+            throw new Error(
+                `Task "${task.content}": When assigning tasks to sections, please also specify projectId`,
+            )
+        }
+
+        if (!targetProjectId) {
+            throw new Error(
+                `Task "${task.content}": Cannot determine target project for assignment validation`,
+            )
+        }
+
+        // Validate assignment using comprehensive validator
+        const validation = await assignmentValidator.validateTaskCreationAssignment(
+            client,
+            targetProjectId,
+            responsibleUser,
+        )
+
+        if (!validation.isValid) {
+            const errorMsg = validation.error?.message || 'Assignment validation failed'
+            const suggestions = validation.error?.suggestions?.join('. ') || ''
+            throw new Error(
+                `Task "${task.content}": ${errorMsg}${suggestions ? `. ${suggestions}` : ''}`,
+            )
+        }
+
+        // Use the validated assignee ID
+        taskArgs.assigneeId = validation.resolvedUser?.userId
     }
 
     return await client.addTask(taskArgs)
