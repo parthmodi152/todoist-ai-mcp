@@ -12,8 +12,8 @@ permissions:
 
 jobs:
   publish:
-    # Only run if a release was published
-    if: ${{ github.event.action == 'published' }}
+    # Only run if a release was published or workflow was manually triggered
+    if: ${{ github.event.action == 'published' || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     # Based on historical data
     timeout-minutes: 60
