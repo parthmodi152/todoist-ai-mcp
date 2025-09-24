@@ -39,6 +39,10 @@ const TasksUpdateSchema = z.object({
         .describe(
             'Change task assignment. Use null to unassign. Can be user ID, name, or email. User must be a project collaborator.',
         ),
+    labels: z
+        .array(z.string())
+        .optional()
+        .describe('The new labels for the task. Replaces all existing labels.'),
 })
 
 type TaskUpdate = z.infer<typeof TasksUpdateSchema>
@@ -66,10 +70,14 @@ const updateTasks = {
                 duration: durationStr,
                 responsibleUser,
                 priority,
+                labels,
                 ...otherUpdateArgs
             } = task
 
-            let updateArgs: UpdateTaskArgs = { ...otherUpdateArgs }
+            let updateArgs: UpdateTaskArgs = {
+                ...otherUpdateArgs,
+                ...(labels !== undefined && { labels }),
+            }
 
             // Handle priority conversion if provided
             if (priority) {
