@@ -3,6 +3,7 @@ name: Release @doist/todoist-ai package
 on:
   release:
     types: [published]
+  workflow_dispatch:
 
 permissions:
   # Enable the use of OIDC for npm provenance
