@@ -17,7 +17,7 @@ You'll need to set your Todoist API key as an environment variable `TODOIST_API_
 Start by cloning this repository and setting it up locally, if you haven't done so yet.
 
 ```sh
-git clone https://github.com/doist/todoist-ai-tools
+git clone https://github.com/Doist/todoist-ai
 npm run setup
 ```
 
@@ -37,9 +37,9 @@ For convenience, we also include a function that initializes an MCP Server with 
 import { getMcpServer } from "@doist/todoist-ai";
 
 async function main() {
-    const server = getMcpServer({ todoistApiKey: process.env.TODOIST_API_KEY });
-    const transport = new StdioServerTransport();
-    await server.connect(transport);
+  const server = getMcpServer({ todoistApiKey: process.env.TODOIST_API_KEY });
+  const transport = new StdioServerTransport();
+  await server.connect(transport);
 }
 ```
 
@@ -53,16 +53,16 @@ Add this section to your `mcp.json` config in Claude, Cursor, etc.:
 
 ```json
 {
-    "mcpServers": {
-        "todoist-ai": {
-            "type": "stdio",
-            "command": "npx",
-            "args": ["@doist/todoist-ai"],
-            "env": {
-                "TODOIST_API_KEY": "your-todoist-token-here"
-            }
-        }
+  "mcpServers": {
+    "todoist-ai": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["@doist/todoist-ai"],
+      "env": {
+        "TODOIST_API_KEY": "your-todoist-token-here"
+      }
     }
+  }
 }
 ```
 
@@ -72,18 +72,16 @@ Add this `todoist-ai-tools` section to your `mcp.json` config in Cursor, Claude,
 
 ```json
 {
-    "mcpServers": {
-        "todoist-ai-tools": {
-            "type": "stdio",
-            "command": "node",
-            "args": [
-                "/Users/<your_user_name>/code/todoist-ai-tools/dist/main.js"
-            ],
-            "env": {
-                "TODOIST_API_KEY": "your-todoist-token-here"
-            }
-        }
+  "mcpServers": {
+    "todoist-ai-tools": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["/Users/<your_user_name>/code/todoist-ai-tools/dist/main.js"],
+      "env": {
+        "TODOIST_API_KEY": "your-todoist-token-here"
+      }
     }
+  }
 }
 ```
 
@@ -109,13 +107,13 @@ This will expose the service at the URL http://localhost:8080/mcp. You can now c
 
 ```json
 {
-	"mcpServers": {
-		"todoist-mcp-http": {
-            "type": "stdio",
-			"command": "npx",
-			"args": ["mcp-remote", "http://localhost:8080/mcp"]
-		}
-	}
+  "mcpServers": {
+    "todoist-mcp-http": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["mcp-remote", "http://localhost:8080/mcp"]
+    }
+  }
 }
 ```
 
