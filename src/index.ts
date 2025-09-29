@@ -55,6 +55,25 @@ const tools = {
     manageAssignments,
 }
 
+// Smithery-compatible export
+export default function createServer({
+    config,
+}: {
+    config?: { todoistApiKey?: string; baseUrl?: string }
+}) {
+    const todoistApiKey = config?.todoistApiKey || process.env.TODOIST_API_KEY
+    const baseUrl = config?.baseUrl || process.env.TODOIST_BASE_URL
+
+    if (!todoistApiKey) {
+        throw new Error(
+            'TODOIST_API_KEY is required. Provide it via config or environment variable.',
+        )
+    }
+
+    const server = getMcpServer({ todoistApiKey, baseUrl })
+    return server.server
+}
+
 export { tools, getMcpServer }
 
 export {
