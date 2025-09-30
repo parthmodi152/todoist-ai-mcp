@@ -1,5 +1,7 @@
 # Todoist AI and MCP SDK
 
+[![smithery badge](https://smithery.ai/badge/@parthmodi152/todoist-ai-mcp)](https://smithery.ai/server/@parthmodi152/todoist-ai-mcp)
+
 Library for connecting AI agents to Todoist. Includes tools that can be integrated into LLMs,
 enabling them to access and modify a Todoist account on the user's behalf.
 
@@ -40,6 +42,14 @@ You can run the MCP server directly with npx:
 
 ```bash
 npx @doist/todoist-ai
+```
+
+### Installing via Smithery
+
+To install todoist-ai-mcp automatically via [Smithery](https://smithery.ai/server/@parthmodi152/todoist-ai-mcp):
+
+```bash
+npx -y @smithery/cli install @parthmodi152/todoist-ai-mcp
 ```
 
 ### Setup Guide
