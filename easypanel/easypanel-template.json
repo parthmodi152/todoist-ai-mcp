@@ -1,0 +1,34 @@
+{
+    "services": [
+        {
+            "type": "app",
+            "data": {
+                "projectName": "todoist-mcp",
+                "serviceName": "todoist-mcp",
+                "source": {
+                    "type": "image",
+                    "image": "ghcr.io/parthmodi152/todoist-mcp-server:4.7.0"
+                },
+                "env": "TODOIST_API_KEY=your_api_key_here\nPORT=8080\nNODE_ENV=production",
+                "deploy": {
+                    "replicas": 1,
+                    "command": null,
+                    "zeroDowntime": true
+                },
+                "domains": [
+                    {
+                        "host": "$(EASYPANEL_DOMAIN)",
+                        "https": true,
+                        "port": 8080,
+                        "path": "/",
+                        "middlewares": [],
+                        "certificateResolver": "",
+                        "wildcard": false,
+                        "internalProtocol": "http"
+                    }
+                ],
+                "mounts": []
+            }
+        }
+    ]
+}

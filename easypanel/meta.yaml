@@ -1,0 +1,55 @@
+name: Todoist AI MCP Server
+description: "MCP server for Todoist that enables AI agents to access and modify Todoist tasks. Provides tools for task management including finding tasks by date, adding tasks, and more."
+instructions: "After deployment, you'll need to authenticate with your Todoist account. Set your TODOIST_API_KEY in the environment variables. Get your API key from Todoist Settings > Integrations > Developer."
+changeLog:
+  - date: 2025-02-29
+    description: first release
+links:
+  - label: Github
+    url: https://github.com/Doist/todoist-ai
+  - label: Documentation
+    url: https://github.com/Doist/todoist-ai/blob/main/README.md
+  - label: MCP Documentation
+    url: https://github.com/Doist/todoist-ai/blob/main/docs/mcp-server.md
+contributors:
+  - name: Doist
+    url: https://github.com/Doist
+schema:
+  type: object
+  required:
+    - appServiceName
+    - appServiceImage
+    - todoistApiKey
+  properties:
+    appServiceName:
+      type: string
+      title: App Service Name
+      default: todoist-mcp
+    appServiceImage:
+      type: string
+      title: App Service Image
+      default: ghcr.io/parthmodi152/todoist-mcp-server:4.7.0
+    todoistApiKey:
+      type: string
+      title: Todoist API Key
+      description: Your Todoist API key from Settings > Integrations > Developer
+benefits:
+  - title: AI-Powered Task Management
+    description: "Connect AI agents to your Todoist account, enabling them to read and modify tasks on your behalf through natural language."
+  - title: MCP Protocol Support
+    description: "Built on the Model Context Protocol, making it compatible with Claude Desktop, Cursor, Claude Code, VS Code, and other MCP clients."
+  - title: HTTP Streamable
+    description: "Runs as an HTTP service, making it easy to deploy and integrate with various AI clients without complex local setup."
+features:
+  - title: Task Discovery
+    description: "Find tasks by date, filter by project, and search across your Todoist workspace to help AI agents understand your task context."
+  - title: Task Management
+    description: "Add, update, and complete tasks through AI agents. AI can help you organize your work by creating and managing tasks naturally."
+  - title: Flexible Integration
+    description: "Use as an MCP server or import tools directly into your own AI applications using the npm package."
+tags:
+  - Productivity
+  - AI
+  - MCP
+  - Task Management
+  - Todoist
